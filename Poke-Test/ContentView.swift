@@ -14,28 +14,37 @@ struct ContentView: View {
   
   var body: some View {
     NavigationStack {
-      ScrollView(.horizontal) {
-        
-        LazyHGrid(rows: [GridItem(.adaptive(minimum: 200))], alignment: .center , spacing: 8) {
+      ScrollView(.vertical) {
+        Text("Use the advanced search to find Pokémon by type, weakness, ability and more!")
+          .font(.subheadline)
+          .lineLimit(nil)
+        let width = (UIScreen.main.bounds.width / 2) - 40
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: width))], alignment: .leading , spacing: 8) {
           ForEach(model.results, id: \.id) { result in
             NavigationLink(value: result) {
               VStack(spacing: 8) {
-                WebImage(url: result.image)
-                  .frame(width: 56, height: 56)
-                  .scaledToFit()
-                VStack(alignment: .leading) {
-                  HStack {
-                    Text(result.name)
-                      .font(.headline)
+                HStack {
+                  Text(result.name)
+                  Spacer()
+                  Text("#\(result.id)")
+                }
+                
+                HStack(spacing: 4) {
+                  if let types = result.types {
+                    VStack(alignment: .leading) {
+                      ForEach(types, id: \.self) { type in
+                        Text(type.type.name)
+                      }
+                    }
                   }
-                  HStack(spacing: 4) {
-                    Text("Type:")
-                      .font(.headline)
-                    Text(result.typesString)
-                      .font(.body)
-                  }
+                  
+                  Spacer()
+                  WebImage(url: result.image)
+                    .frame(width: 56, height: 56)
+                    .scaledToFit()
                 }
               }
+              .frame(width: width - 8)
               .padding(16)
               .overlay {
                 RoundedRectangle(cornerRadius: 25, style: .continuous)
@@ -49,8 +58,15 @@ struct ContentView: View {
       .navigationDestination(for: PokemonDetail.self, destination: { pokemon in
         DetailView().environmentObject(pokemon)
       })
-      .searchable(text: $model.searchText)
-      .navigationTitle("Pokedex")
+      .searchable(text: $model.searchText, placement: .navigationBarDrawer, prompt: "search a pokémon")
+      .toolbar {
+        ToolbarItem(placement: .topBarLeading) {
+          Text("Pokédex")
+            .font(.largeTitle)
+            .fontWeight(.bold)
+          Text("X")
+        }
+      }
     }
   }
 }

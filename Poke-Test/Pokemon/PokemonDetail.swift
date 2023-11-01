@@ -24,6 +24,10 @@ class PokemonDetail: ObservableObject {
     return URL(string: image)
   }
   
+  var types: [PokemonType]? {
+    pokemon.types
+  }
+  
   init(pokemon: Pokemon) {
     self.pokemon = pokemon
   }
@@ -50,6 +54,17 @@ extension PokemonDetail: Hashable {
   func hash(into hasher: inout Hasher) {
     hasher.combine(id)
     hasher.combine(name)
+  }
+}
+
+extension PokemonType: Hashable {
+  static func == (lhs: PokemonType, rhs: PokemonType) -> Bool {
+    lhs.type.name == rhs.type.name
+  }
+  
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(type.name)
+    hasher.combine(type.url)
   }
 }
 
