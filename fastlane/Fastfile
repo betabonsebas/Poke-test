@@ -19,7 +19,7 @@ platform :ios do
   desc "Build the app"
   lane :beta do
     # add actions here: https://docs.fastlane.tools/actions
-    match(type: "adhoc" ,app_identifier: ["com.bonsebas.Poke-Test"])
+    match(type: "adhoc", app_identifier: ["com.bonsebas.Poke-Test"])
     build_app(project: "Poke-test.xcodeproj", scheme: "Poke-test", silent: false)
   end
   lane :certificates do
